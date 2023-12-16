@@ -11,8 +11,6 @@ def render_user_interface():
     user_df = None
     export_df = None
 
-    st.title('Financial Clarity Hub')
-
     with st.form(key='user_input_form'):
         st.header('User Information')
 
