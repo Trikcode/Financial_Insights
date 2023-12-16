@@ -1,9 +1,8 @@
 import streamlit as st
 import pyrebase
-
+from user_interface import render_user_interface
 from dotenv import load_dotenv
 import os
-from user_interface import render_user_interface
 
 load_dotenv()
 
@@ -20,7 +19,8 @@ firebaseConfig = {
 
 st.set_page_config(page_title='Financial Clarity Hub', page_icon=':moneybag:', layout='wide')
 
-st.title('Financial Clarity Hub: Financial Dashboard')
+if 'user_authenticated' not in st.session_state:
+    st.session_state['user_authenticated'] = False
 
 # Function to handle authentication
 def authenticate():
@@ -35,40 +35,50 @@ def authenticate():
         try:
             user = auth.sign_in_with_email_and_password(email, password)
             st.success('Successfully logged in!')
-            st.experimental_set_query_params(logged_in=True)
+            st.session_state['user_authenticated'] = True
             st.rerun()
         except Exception as e:
             st.error('Login failed. Please check your credentials.')
 
-    register = st.checkbox('Register')
+def register():
+    firebase = pyrebase.initialize_app(firebaseConfig)
+    auth = firebase.auth()
 
-    if register:
-        new_email = st.text_input('New Email')
-        new_password = st.text_input('New Password', type='password')
-        confirm_password = st.text_input('Confirm Password', type='password')
-        signup = st.button('Sign Up')
+    new_email = st.text_input('New Email')
+    new_password = st.text_input('New Password', type='password')
+    confirm_password = st.text_input('Confirm Password', type='password')
+    signup = st.button('Sign Up')
 
-        if signup:
-            if new_password == confirm_password:
-                try:
-                    auth.create_user_with_email_and_password(new_email, new_password)
-                    st.success('Successfully registered!')
-                    # Proceed to login or redirect to login form
-                except Exception as e:
-                    st.error('Registration failed. Please try again.')
-            else:
-                st.warning('Passwords do not match.')
+    if signup:
+        if new_password == confirm_password:
+            try:
+                auth.create_user_with_email_and_password(new_email, new_password)
+                st.success('Successfully registered!')
+                st.session_state['user_authenticated'] = True
+                st.rerun()
+            except Exception as e:
+                st.error('Registration failed. Please try again.')
+        else:
+            st.warning('Passwords do not match.')
+
+def logout():
+    st.session_state['user_authenticated'] = False
+
+def view_insights():
+    # Add functionality to view insights from the database here
+    st.write("Viewing user's previous insights")
 
 def render_authentication():
     st.title('Login/Register')
     authenticate()
+    register()
 
-
-# Get the query parameters
-query_params = st.experimental_get_query_params()
-logged_in = query_params.get('logged_in')
-
-if logged_in:
+if st.session_state.get('user_authenticated'):
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        view_insights()
+    with col2:
+        logout()
     st.write("Welcome to Financial Clarity Hub! Enter your information below to generate personalized financial insights.")
     render_user_interface()
 else:

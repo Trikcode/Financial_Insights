@@ -3,6 +3,22 @@ import pandas as pd
 import plotly.express as px
 from data_fetch import get_stock_price, get_stock_info
 from predictions import render_predictions 
+from dotenv import load_dotenv
+import os
+import pyrebase
+
+load_dotenv()
+
+# Firebase configuration using environment variables
+firebaseConfig = {
+    "apiKey": os.getenv("FIREBASE_API_KEY"),
+    "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN"),
+    "projectId": os.getenv("FIREBASE_PROJECT_ID"),
+    "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET"),
+    "messagingSenderId": os.getenv("FIREBASE_MESSAGING_SENDER_ID"),
+    "appId": os.getenv("FIREBASE_APP_ID"),
+    "databaseURL": os.getenv("FIREBASE_DATABASE_URL")
+}
 
 def render_user_interface():
     insights = None
@@ -10,6 +26,8 @@ def render_user_interface():
     user_data = None
     user_df = None
     export_df = None
+    firebase = pyrebase.initialize_app(firebaseConfig)
+    db = firebase.database()
 
     with st.form(key='user_input_form'):
         st.header('User Information')
@@ -89,6 +107,10 @@ def render_user_interface():
                 'Long-term Goal': long_term_goal,
                 'Risk Tolerance': risk_tolerance,
             }
+            # After collecting user_data
+            if user_data is not None:
+                db.child("user_data").push(user_data)
+
             user_df = pd.DataFrame.from_dict(user_data, orient='index', columns=['Value'])
 
             st.subheader('User Financial Data Visualization')
