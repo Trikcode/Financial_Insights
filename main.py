@@ -1,21 +1,8 @@
 import streamlit as st
 import pyrebase
 from user_interface import render_user_interface
-from dotenv import load_dotenv
-import os
+from firebase_config import firebaseConfig
 
-load_dotenv()
-
-# Firebase configuration using environment variables
-firebaseConfig = {
-    "apiKey": os.getenv("FIREBASE_API_KEY"),
-    "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN"),
-    "projectId": os.getenv("FIREBASE_PROJECT_ID"),
-    "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET"),
-    "messagingSenderId": os.getenv("FIREBASE_MESSAGING_SENDER_ID"),
-    "appId": os.getenv("FIREBASE_APP_ID"),
-    "databaseURL": os.getenv("FIREBASE_DATABASE_URL")
-}
 
 st.set_page_config(page_title='Financial Clarity Hub', page_icon=':moneybag:', layout='wide')
 
@@ -63,22 +50,27 @@ def register():
 
 def logout():
     st.session_state['user_authenticated'] = False
+    st.success('Successfully logged out!')
+    st.rerun()
+    
 
 def view_insights():
-    # Add functionality to view insights from the database here
     st.write("Viewing user's previous insights")
 
 def render_authentication():
     st.title('Login/Register')
     authenticate()
-    register()
+    if st.checkbox('Show Register Form'):
+        register()
 
 if st.session_state.get('user_authenticated'):
     col1, col2 = st.columns([1, 1])
     with col1:
-        view_insights()
+        if st.button('View Previous Insights'):
+            view_insights()  
     with col2:
-        logout()
+        if st.button('Logout'):
+            logout()
     st.write("Welcome to Financial Clarity Hub! Enter your information below to generate personalized financial insights.")
     render_user_interface()
 else:

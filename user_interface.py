@@ -3,22 +3,9 @@ import pandas as pd
 import plotly.express as px
 from data_fetch import get_stock_price, get_stock_info
 from predictions import render_predictions 
-from dotenv import load_dotenv
-import os
+from firebase_config import firebaseConfig
 import pyrebase
 
-load_dotenv()
-
-# Firebase configuration using environment variables
-firebaseConfig = {
-    "apiKey": os.getenv("FIREBASE_API_KEY"),
-    "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN"),
-    "projectId": os.getenv("FIREBASE_PROJECT_ID"),
-    "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET"),
-    "messagingSenderId": os.getenv("FIREBASE_MESSAGING_SENDER_ID"),
-    "appId": os.getenv("FIREBASE_APP_ID"),
-    "databaseURL": os.getenv("FIREBASE_DATABASE_URL")
-}
 
 def render_user_interface():
     insights = None
@@ -87,6 +74,7 @@ def render_user_interface():
                 stock_info = get_stock_info(stock_symbol)
                 if stock_info:
                     st.write(f"Export stock information for {stock_symbol}: by clicking the button below.")
+                    st.write(stock_info)
                 else:
                     st.write("Error fetching stock information.")
 
@@ -107,6 +95,7 @@ def render_user_interface():
                 'Long-term Goal': long_term_goal,
                 'Risk Tolerance': risk_tolerance,
             }
+            print(user_data)
             # After collecting user_data
             if user_data is not None:
                 db.child("user_data").push(user_data)
