@@ -54,7 +54,7 @@ python-dotenv==1.0.0
 python-jwt==4.1.0
 pytz==2023.3.post1
 referencing==0.32.0
-requests==2.29.0
+requests
 requests-toolbelt==0.10.1
 rich==13.7.0
 rpds-py==0.13.2
