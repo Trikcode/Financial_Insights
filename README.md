@@ -3,6 +3,10 @@
 ## Overview
 Financial Clarity Hub is an interactive web application that empowers users to gain insights into their financial health, set goals, and analyze stock market data. This project was developed during [Event/Hackathon Name] using Streamlit for the frontend and integrating Google Cloud services with Firebase for backend support.
 
+## Hosted Project
+The Financial Clarity Hub is live! Access the hosted project [here](https://trikcode-financial-insights-main-nv7cxi.streamlit.app/).
+
+
 ## Table of Contents
 - [About](#about)
 - [Features](#features)
