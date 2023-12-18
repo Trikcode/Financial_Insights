@@ -10,7 +10,6 @@ Financial Clarity Hub is an interactive web application that empowers users to g
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## About
 The project was inspired by the need for a centralized platform where users could manage their financial information, set goals, and gain valuable insights into the stock market. The aim was to create an intuitive and user-friendly interface to facilitate financial planning and analysis.
@@ -45,5 +44,3 @@ To run the application locally:
 ## Contributing
 Contributions are welcome! Please fork the repository, create a new branch, and submit a pull request.
 
-## License
-This project is licensed under the [License Name] - see the [LICENSE](LICENSE) file for details.
